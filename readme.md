@@ -10,7 +10,6 @@ This block is especially helpful for remembering important tasks, deadlines, and
 - [Diagrams](#diagrams)
 - [Resources](#resources)
 
-
 ## ⚙️ Installation Guide
 
 To install and run the **Sticky Notes** Moodle block plugin, follow these steps.

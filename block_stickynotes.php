@@ -4,10 +4,10 @@ class block_stickynotes extends block_base {
     public function init() {
         $this->title = get_string('pluginname', 'block_stickynotes');
     }
-
+// Main function to render block content
 public function get_content() {
     global $USER, $OUTPUT, $DB;
-
+ // Return cached content if already set
     if ($this->content !== null) {
         return $this->content;
     }
@@ -17,7 +17,7 @@ public function get_content() {
     $this->content = new stdClass();
     $this->content->text = '';
     $this->content->footer = '';
-
+ // Check if we are editing an existing note
     $editing = null;
     $editid = optional_param('edit', 0, PARAM_INT);
     if ($editid) {
@@ -25,10 +25,12 @@ public function get_content() {
     }
 
     $mform = new block_stickynotes_form(null, ['editing' => $editing]);
-
+ // Handle form submission
     if ($mform->is_cancelled()) {
+        // Redirect if form is cancelled
         redirect(new moodle_url('/my'));
     } else if ($fromform = $mform->get_data()) {
+         // If editing existing note
         if (!empty($fromform->id)) {
             $record = $DB->get_record('block_stickynotes', ['id' => $fromform->id, 'userid' => $USER->id]);
             if ($record) {
@@ -38,6 +40,7 @@ public function get_content() {
                 $DB->update_record('block_stickynotes', $record);
             }
         } else {
+            // If adding a new note
             $record = new stdClass();
             $record->userid = $USER->id;
             $record->note = $fromform->note;
@@ -48,7 +51,7 @@ public function get_content() {
         }
         redirect(new moodle_url('/my'));
     }
-
+// Display the form (output buffering)
     ob_start();
     $mform->display();
     $this->content->text .= ob_get_clean();
@@ -113,7 +116,7 @@ public function get_content() {
         } elseif ($note->duedate < time()) {
             $classes .= ' overdue';
         }
-
+// Render each note with styling, actions, and reminder if due today
         $this->content->text .= html_writer::start_div($classes);
         $this->content->text .= html_writer::start_div('note-actions');
         $this->content->text .= $editlink . $deletelink;
